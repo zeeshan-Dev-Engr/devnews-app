@@ -3,9 +3,11 @@ const nextConfig = {
   images: {
     domains: ["media2.dev.to"],
   },
-  experimental: {
-    serverActions: {}, // ✅ instead of true
-  },
+  // ✅ Correct:
+experimental: {
+  serverActions: { enabled: true }
+}
+
 }
 
 module.exports = nextConfig
