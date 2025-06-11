@@ -9,7 +9,26 @@ interface GetArticlesParams {
   per_page?: number
 }
 
-function normalizeArticle(article: any): Article {
+interface RawArticle {
+  tags?: string | string[] | null
+  tag_list?: string[]
+  positive_reactions_count?: number
+  comments_count?: number
+  public_reactions_count?: number
+  reading_time_minutes?: number
+  user?: {
+    name?: string
+    username?: string
+    twitter_username?: string | null
+    github_username?: string | null
+    website_url?: string | null
+    profile_image?: string | null
+    profile_image_90?: string | null
+  }
+  [key: string]: any
+}
+
+function normalizeArticle(article: RawArticle): Article {
   // Handle tags - they might be a string, array, or null
   let tags: string[] = []
   if (typeof article.tags === "string") {
