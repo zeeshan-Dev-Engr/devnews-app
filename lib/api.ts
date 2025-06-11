@@ -25,12 +25,12 @@ interface RawArticle {
     profile_image?: string | null
     profile_image_90?: string | null
   }
-  [key: string]: any
+  [key: string]: unknown 
 }
 
 function normalizeArticle(article: RawArticle): Article {
-  // Handle tags - they might be a string, array, or null
   let tags: string[] = []
+
   if (typeof article.tags === "string") {
     tags = article.tags
       .split(",")
@@ -70,13 +70,8 @@ export async function getArticles({
   try {
     const params = new URLSearchParams()
 
-    if (tag) {
-      params.append("tag", tag)
-    }
-
-    if (query) {
-      params.append("search", query)
-    }
+    if (tag) params.append("tag", tag)
+    if (query) params.append("search", query)
 
     params.append("page", page.toString())
     params.append("per_page", per_page.toString())
@@ -85,14 +80,14 @@ export async function getArticles({
       headers: {
         "Content-Type": "application/json",
       },
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 3600 },
     })
 
     if (!response.ok) {
       throw new Error(`Failed to fetch articles: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data: RawArticle[] = await response.json()
     return data.map(normalizeArticle)
   } catch (error) {
     console.error("Error fetching articles:", error)
@@ -106,17 +101,15 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 3600 },
     })
 
     if (!response.ok) {
-      if (response.status === 404) {
-        return null
-      }
+      if (response.status === 404) return null
       throw new Error(`Failed to fetch article: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data: RawArticle = await response.json()
     return normalizeArticle(data)
   } catch (error) {
     console.error(`Error fetching article with slug ${slug}:`, error)
