@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search, X } from "lucide-react"
@@ -12,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 
 const popularTags = ["javascript", "webdev", "react", "beginners", "programming", "python", "typescript", "css"]
 
-export default function FilterSection() {
+function FilterSectionInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState("")
@@ -109,5 +108,13 @@ export default function FilterSection() {
         ))}
       </motion.div>
     </section>
+  )
+}
+
+export default function FilterSection() {
+  return (
+    <Suspense fallback={null}>
+      <FilterSectionInner />
+    </Suspense>
   )
 }
